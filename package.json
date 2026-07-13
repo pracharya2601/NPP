@@ -51,18 +51,18 @@
   },
   "peerDependencies": {
     "@nestjs/common": "^11.0.0",
-    "@nestjs/graphql": "^13.1.0",
+    "@nestjs/graphql": "^13.4.2",
     "@vendure/core": "^3.7.0",
-    "typeorm": "^0.3.21"
+    "typeorm": "^1.1.0"
   },
   "devDependencies": {
-    "@types/node": "^22.15.0",
+    "@types/node": "^26.1.1",
     "@nestjs/common": "^11.0.12",
-    "@nestjs/graphql": "^13.1.0",
+    "@nestjs/graphql": "^13.4.2",
     "@vendure/core": "3.7.0",
-    "typeorm": "^0.3.21",
-    "typescript": "5.8.2",
-    "vitest": "^3.2.4"
+    "typeorm": "^1.1.0",
+    "typescript": "7.0.2",
+    "vitest": "^4.1.10"
   },
   "publishConfig": {
     "access": "public",
