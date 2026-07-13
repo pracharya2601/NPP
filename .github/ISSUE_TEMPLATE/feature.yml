@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose a backwards-compatible improvement.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    attributes:
+      label: Problem
+      description: What merchant or storefront problem should be solved?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Payment and compatibility risks
+      description: Discuss state, idempotency, refunds, API compatibility, database changes, and failure behavior.
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to help implement or test this feature.

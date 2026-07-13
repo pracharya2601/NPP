@@ -1,0 +1,71 @@
+{
+  "name": "@tiat/vendure-plugin-nepal-payments",
+  "version": "0.1.0",
+  "description": "Open-source Vendure payment integrations for Khalti by IME, eSewa, and other Nepalese providers",
+  "license": "MIT",
+  "author": "TIAT Contributors",
+  "keywords": [
+    "vendure",
+    "vendure-plugin",
+    "payments",
+    "nepal",
+    "khalti",
+    "esewa",
+    "fonepay",
+    "ecommerce"
+  ],
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true })\"",
+    "check": "npm run typecheck && npm test && npm run build",
+    "check:release-metadata": "node scripts/check-release-metadata.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepack": "npm run clean && npm run check",
+    "prepublishOnly": "npm run check:release-metadata && npm run check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "graphql-tag": "^2.12.6"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/graphql": "^13.1.0",
+    "@vendure/core": "^3.7.0",
+    "typeorm": "^0.3.21"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@nestjs/common": "^11.0.12",
+    "@nestjs/graphql": "^13.1.0",
+    "@vendure/core": "3.7.0",
+    "typeorm": "^0.3.21",
+    "typescript": "5.8.2",
+    "vitest": "^3.2.4"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

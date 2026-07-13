@@ -1,0 +1,52 @@
+name: Bug report
+description: Report a reproducible problem in the plugin.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: checkboxes
+    attributes:
+      label: Safety checks
+      options:
+        - label: I removed credentials, customer data, OTPs, PINs, and complete production transaction identifiers.
+          required: true
+        - label: This is not a security vulnerability. Security issues must use private reporting.
+          required: true
+  - type: input
+    attributes:
+      label: Plugin version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Vendure, Node.js, and database versions
+      placeholder: Vendure 3.7.0, Node 22.x, PostgreSQL 16
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Provider
+      options: [Khalti, eSewa, Fonepay, Shared/core, Documentation]
+    validations:
+      required: true
+  - type: dropdown
+    attributes:
+      label: Environment
+      options: [Mocked/unit test, Provider sandbox, Production]
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual behavior and reproduction
+      description: Use synthetic or redacted values only.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Relevant redacted logs
+      render: text

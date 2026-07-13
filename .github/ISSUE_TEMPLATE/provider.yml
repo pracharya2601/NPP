@@ -1,0 +1,34 @@
+name: New provider proposal
+description: Propose another Nepalese payment provider.
+title: "[Provider]: "
+labels: [provider]
+body:
+  - type: input
+    attributes:
+      label: Provider
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Official public documentation
+      description: Link only to provider-owned or legally shareable material.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Merchant access
+      description: Explain sandbox availability, onboarding, and whether documentation may be redistributed.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Required flows
+      description: Initiation, redirect/QR, verification, callbacks, expiry, cancellation, and refunds.
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: Safety
+      options:
+        - label: I have not attached private merchant documents or credentials.
+          required: true
