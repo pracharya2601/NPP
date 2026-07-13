@@ -1,5 +1,8 @@
 # Vendure Nepal Payments
 
+[![CI](https://github.com/pracharya2601/NPP/actions/workflows/ci.yml/badge.svg)](https://github.com/pracharya2601/NPP/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 An open-source Vendure 3.7 plugin for Nepalese payment providers, licensed under MIT. The initial release implements Khalti KPG-2 and eSewa ePay v2 behind a shared payment-attempt and provider interface. Fonepay is reserved in the API, but intentionally disabled until current official merchant documentation is available.
 
 > **Pre-release status:** the code is suitable for integration and sandbox testing, but version 0.1.0 has not yet been validated with real merchant sandbox credentials or published to npm. Do not process production payments until the production checklist and provider certification/onboarding steps are complete.

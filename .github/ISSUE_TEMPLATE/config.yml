@@ -1,1 +1,8 @@
 blank_issues_enabled: false
+contact_links:
+  - name: Integration question or design discussion
+    url: https://github.com/pracharya2601/NPP/discussions
+    about: Ask usage questions and discuss provider integrations.
+  - name: Security vulnerability
+    url: https://github.com/pracharya2601/NPP/security/advisories/new
+    about: Report vulnerabilities privately; never open a public issue.

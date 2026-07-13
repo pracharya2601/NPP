@@ -27,3 +27,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - NPR-safe integer amount conversion
 - Storefront GraphQL API and integration documentation
 - Unit tests for configuration, signing, amount conversion, Khalti, and eSewa
+
+[Unreleased]: https://github.com/pracharya2601/NPP/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/pracharya2601/NPP/releases/tag/v0.1.0
