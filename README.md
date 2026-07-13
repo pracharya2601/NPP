@@ -38,7 +38,7 @@ This repository is currently the package itself. In a Vendure application, insta
 
 ```bash
 # Available after the first npm publication
-npm install @tiat/vendure-plugin-nepal-payments
+npm install @pa/vendure-plugin-nepal-payments
 ```
 
 For installation from a local clone before publication, build an npm tarball and install it into the Vendure server project. See the [complete installation guide](./docs/INSTALLATION.md#1-install-the-package).
@@ -47,7 +47,7 @@ Configure it in `vendure-config.ts`:
 
 ```ts
 import { DefaultSchedulerPlugin, VendureConfig } from '@vendure/core';
-import { NepalPaymentsPlugin } from '@tiat/vendure-plugin-nepal-payments';
+import { NepalPaymentsPlugin } from '@pa/vendure-plugin-nepal-payments';
 
 export const config: VendureConfig = {
   // ...

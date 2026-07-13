@@ -1,9 +1,9 @@
 {
-  "name": "@tiat/vendure-plugin-nepal-payments",
+  "name": "@pa/vendure-plugin-nepal-payments",
   "version": "0.1.0",
   "description": "Open-source Vendure payment integrations for Khalti by IME, eSewa, and other Nepalese providers",
   "license": "MIT",
-  "author": "TIAT Contributors",
+  "author": "NPP Contributors",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pracharya2601/NPP.git"

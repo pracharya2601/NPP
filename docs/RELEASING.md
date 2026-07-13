@@ -7,7 +7,7 @@ Before the first public release:
 1. Create the public GitHub repository.
 2. Add `repository`, `homepage`, and `bugs` URLs to `package.json`.
 3. Replace the repository link placeholders in `CHANGELOG.md`.
-4. Confirm that the `@tiat` npm organization exists and maintainers have publish access. Otherwise choose another scoped package name before `1.0.0`.
+4. Confirm that the `@pa` npm organization exists and maintainers have publish access. Otherwise choose another scoped package name before `1.0.0`.
 5. Enable GitHub private vulnerability reporting.
 6. Configure npm Trusted Publishing for the GitHub release workflow and repository.
 7. Enable branch protection requiring the CI workflow.
