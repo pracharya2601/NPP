@@ -3,9 +3,9 @@
 [![CI](https://github.com/pracharya2601/NPP/actions/workflows/ci.yml/badge.svg)](https://github.com/pracharya2601/NPP/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-An open-source Vendure 3.7 plugin for Nepalese payment providers, licensed under MIT. The initial release implements Khalti KPG-2 and eSewa ePay v2 behind a shared payment-attempt and provider interface. Fonepay is reserved in the API, but intentionally disabled until current official merchant documentation is available.
+An open-source Vendure 3.7 plugin for Nepalese payment providers, licensed under MIT. It implements Khalti KPG-2, eSewa ePay v2, and an experimental Fonepay Dynamic QR adapter behind a shared payment-attempt and provider interface.
 
-> **Pre-release status:** the code is suitable for integration and sandbox testing, but version 0.1.0 has not yet been validated with real merchant sandbox credentials or published to npm. Do not process production payments until the production checklist and provider certification/onboarding steps are complete.
+> **Early-stage status:** use the plugin for integration and sandbox testing first. Fonepay support in version 0.2.0 has not been certified against current merchant sandbox credentials. Do not process production payments until the production checklist and provider certification/onboarding steps are complete.
 
 ## Documentation
 
@@ -13,6 +13,7 @@ An open-source Vendure 3.7 plugin for Nepalese payment providers, licensed under
 - [Configuration reference](./docs/CONFIGURATION.md)
 - [Storefront integration](./docs/STOREFRONT.md)
 - [Provider support](./docs/PROVIDERS.md)
+- [Fonepay Dynamic QR integration](./docs/FONEPAY.md)
 - [Architecture](./docs/ARCHITECTURE.md)
 - [Production checklist](./docs/PRODUCTION.md)
 - [Data handling and privacy](./docs/DATA_HANDLING.md)
@@ -23,7 +24,8 @@ An open-source Vendure 3.7 plugin for Nepalese payment providers, licensed under
 
 - Khalti server-side initiation, redirect, lookup verification, and wallet refund calls; some bank-funded refunds require manual provider handling
 - eSewa signed ePay form generation, signed callback validation, and status verification
-- Separate Vendure payment handlers: `nepal-khalti` and `nepal-esewa`
+- Experimental Fonepay Dynamic QR creation and authenticated PRN status polling
+- Separate Vendure payment handlers: `nepal-khalti`, `nepal-esewa`, and `nepal-fonepay`
 - Persistent, idempotent `NepalPaymentAttempt` records
 - Signed internal settlement proofs that bind a provider transaction to its Vendure order
 - GET and POST callback routes
@@ -37,7 +39,6 @@ Only a server-to-server provider lookup can settle an order. Browser callback fi
 This repository is currently the package itself. In a Vendure application, install the package and ensure Vendure's recommended `DefaultSchedulerPlugin` is enabled.
 
 ```bash
-# Available after the first npm publication
 npm install @prakashacharya/vendure-plugin-nepal-payments
 ```
 
@@ -69,6 +70,14 @@ export const config: VendureConfig = {
         secretKey: process.env.ESEWA_SECRET_KEY!,
         paymentMethodCode: 'esewa',
       },
+      fonepay: {
+        environment: process.env.FONEPAY_ENVIRONMENT as 'sandbox' | 'production',
+        merchantCode: process.env.FONEPAY_MERCHANT_CODE!,
+        username: process.env.FONEPAY_USERNAME!,
+        password: process.env.FONEPAY_PASSWORD!,
+        secretKey: process.env.FONEPAY_SECRET_KEY!,
+        paymentMethodCode: 'fonepay',
+      },
       reconciliationSchedule: '*/5 * * * *',
     }),
   ],
@@ -95,6 +104,7 @@ In the Vendure Dashboard, create and assign these payment methods to the NPR cha
 | --- | --- |
 | `khalti` | `Khalti by IME` / `nepal-khalti` |
 | `esewa` | `eSewa` / `nepal-esewa` |
+| `fonepay` | `Fonepay` / `nepal-fonepay` |
 
 If a different payment method code is used, set the matching `paymentMethodCode` in plugin configuration. Keep the methods unavailable outside NPR channels using channel assignment or an eligibility checker.
 
@@ -109,6 +119,7 @@ mutation InitiateNepalPayment($provider: NepalPaymentProviderCode!) {
     provider
     status
     redirectUrl
+    qrPayload
     expiresAt
     form {
       action
@@ -139,6 +150,8 @@ function submitProviderForm(form: { action: string; fields: Array<{ name: string
 }
 ```
 
+For Fonepay, render `qrPayload` locally as a QR code. Do not send the payload to a third-party QR-image service because it is a payment capability. Poll the authoritative Vendure order/payment state while the worker reconciles the PRN with Fonepay.
+
 After the provider returns, the plugin redirects to `storefrontResultUrl` with `attemptId`, `provider`, and `status` query parameters. The storefront should then query the active order/order state from Vendure; it must not treat the redirect query string itself as proof of fulfillment.
 
 ## Callback routes
@@ -155,25 +168,24 @@ These URLs are generated automatically. They must be reachable from the public i
 ## Payment lifecycle
 
 1. A UUID payment attempt is stored against the active Vendure order.
-2. The plugin creates a Khalti payment or signed eSewa form.
-3. The provider returns the customer to the callback route.
-4. The plugin claims the attempt atomically and calls the provider status endpoint.
+2. The plugin creates a Khalti payment, signed eSewa form, or Fonepay Dynamic QR.
+3. Redirect providers return the customer to the callback route; QR providers remain pending for worker reconciliation.
+4. The callback or reconciliation worker claims the attempt atomically and calls the provider status endpoint.
 5. It verifies the exact amount and successful provider state.
 6. It generates a short-lived internal settlement proof bound to provider, attempt, order, amount, and provider reference.
 7. The Vendure payment handler verifies that proof and independently checks the provider again.
 8. Vendure creates a `Settled` payment and transitions the order normally.
-9. The scheduled reconciliation task repeats verification for delayed or interrupted callbacks.
+9. The scheduled reconciliation task repeats verification for delayed redirects and QR payments without callbacks.
 
 ## Fonepay
 
-Fonepay dynamic QR requires merchant-specific onboarding documentation and credentials. The shared adapter boundary and GraphQL enum are present, but initiating `FONEPAY` currently fails explicitly. Do not implement signing or callback rules from unofficial copies of its API document. Add the provider only after obtaining:
+Fonepay support is experimental and must not be treated as production-certified. The adapter independently implements Dynamic QR creation with HMAC-SHA512 hexadecimal request validation and authenticated PRN status polling. Fonepay's documented status response does not echo the paid amount; the plugin binds the unique PRN to the immutable amount used during signed initiation and settles only after the server lookup returns success for the same merchant and PRN.
 
-- sandbox and production base URLs
-- authentication and signing specification
-- dynamic QR request and response schema
-- transaction enquiry endpoint
-- refund capability
-- callback authentication or source requirements
+WebSocket data is not used as settlement proof. The scheduled reconciliation task performs the authoritative lookup. The documented tax-refund call is not a standard payment refund, so `nepal-fonepay` does not advertise Vendure refund support.
+
+Obtain current endpoints and credentials through Fonepay or the acquiring bank. The historical sandbox endpoint observed during implementation had an invalid TLS certificate; never disable TLS verification to work around provider infrastructure.
+
+See the [complete Fonepay integration and certification guide](./docs/FONEPAY.md).
 
 IME Pay is not implemented separately because it has merged into Khalti by IME.
 
@@ -211,7 +223,7 @@ This community project is not affiliated with or endorsed by Vendure or any paym
 
 ## Production checklist
 
-- Complete merchant onboarding separately with Khalti and eSewa.
+- Complete merchant onboarding separately with every enabled provider.
 - Use distinct sandbox and production credentials.
 - Keep all secrets in a secret manager, not source control or Dashboard descriptions.
 - Run the generated database migration before enabling payment methods.
@@ -220,4 +232,4 @@ This community project is not affiliated with or endorsed by Vendure or any paym
 - Alert on attempts that remain pending or unknown beyond an agreed threshold.
 - Confirm provider refund rules and transaction limits in the signed merchant agreements.
 
-Official references: [Vendure payments](https://docs.vendure.io/current/core/core-concepts/payment), [publishing a Vendure plugin](https://docs.vendure.io/current/core/how-to/publish-plugin), [Khalti KPG-2](https://docs.khalti.com/khalti-epayment/), [Khalti refunds](https://docs.khalti.com/api/refund/), and [eSewa ePay](https://developer.esewa.com.np/pages/Epay).
+Official references: [Vendure payments](https://docs.vendure.io/current/core/core-concepts/payment), [publishing a Vendure plugin](https://docs.vendure.io/current/core/how-to/publish-plugin), [Khalti KPG-2](https://docs.khalti.com/khalti-epayment/), [Khalti refunds](https://docs.khalti.com/api/refund/), [eSewa ePay](https://developer.esewa.com.np/pages/Epay), and [Fonepay business onboarding](https://fonepay.com/business).

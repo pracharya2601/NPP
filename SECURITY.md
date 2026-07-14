@@ -23,7 +23,7 @@ Include:
 - reproduction steps using redacted or synthetic data;
 - suggested mitigation, if known.
 
-Never include live keys, customer data, wallet identifiers, OTPs, PINs, or reusable production transaction details.
+Never include live keys, customer data, wallet identifiers, OTPs, PINs, raw Fonepay QR payloads, provider WebSocket capability URLs, or reusable production transaction details.
 
 Maintainers should acknowledge a report within 5 business days, provide an initial assessment within 10 business days, and coordinate disclosure after a fix is available. These are targets, not a commercial support SLA.
 
@@ -37,6 +37,8 @@ Examples of security issues include:
 - leaked provider credentials or sensitive logs;
 - cross-channel or cross-order payment attachment;
 - unsafe redirect handling;
-- signature verification bypasses.
+- signature verification bypasses;
+- settlement based on a QR scan or WebSocket notification without the authoritative provider lookup;
+- Fonepay PRN, merchant-code, or trace-ID binding failures.
 
 Provider account disputes, merchant onboarding, transaction reversals, and provider outages should be handled through the provider's official merchant support rather than this security process.

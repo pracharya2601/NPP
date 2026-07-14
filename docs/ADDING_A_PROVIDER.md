@@ -44,7 +44,7 @@ Refund support is optional. If no verified API exists, omit `createRefund` and d
 
 ## 5. Add GraphQL and callback support
 
-Update the GraphQL enum and ensure the provider can use the shared callback route. If a provider requires a webhook with different authentication, add a narrowly scoped controller and document it.
+Update the GraphQL enum and determine whether the provider uses the shared callback route, scheduled status reconciliation, or a separately authenticated webhook. If a provider requires a webhook with different authentication, add a narrowly scoped controller and document it. QR/WebSocket notifications must not settle a payment unless the provider contract makes them independently authenticated and replay-safe; otherwise use them only as a trigger for server-side verification.
 
 ## 6. Test the contract
 

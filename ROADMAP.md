@@ -6,6 +6,7 @@ This roadmap expresses direction, not a delivery commitment.
 
 - End-to-end Vendure tests with PostgreSQL
 - Official sandbox contract tests for Khalti and eSewa
+- Fonepay sandbox certification, current endpoint confirmation, and production-readiness review
 - Per-channel provider credentials
 - Admin API and Dashboard views for payment attempts
 - Operational reconciliation commands and metrics
@@ -14,7 +15,6 @@ This roadmap expresses direction, not a delivery commitment.
 
 ## Candidate providers
 
-- Fonepay dynamic QR after official documentation is available for redistribution/implementation
 - connectIPS or NEPALPAY based on contributor and merchant demand
 
 ## 1.0 criteria

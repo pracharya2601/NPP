@@ -12,9 +12,9 @@
 | `reconciliationSchedule` | cron string or `false` | No | Defaults to every five minutes (`*/5 * * * *`). `false` disables the scheduled task. |
 | `khalti` | `KhaltiPluginOptions` | Conditional | Enables Khalti. |
 | `esewa` | `EsewaPluginOptions` | Conditional | Enables eSewa. |
-| `fonepay` | `FonepayPluginOptions` | No | Reserved API shape only; Fonepay initiation is not implemented yet. |
+| `fonepay` | `FonepayPluginOptions` | Conditional | Enables experimental Fonepay Dynamic QR. |
 
-At least one of `khalti` or `esewa` is required.
+At least one provider is required.
 
 ## Khalti options
 
@@ -34,13 +34,26 @@ At least one of `khalti` or `esewa` is required.
 | `environment` | `sandbox` or `production` | No | Defaults to `sandbox`. |
 | `paymentMethodCode` | `string` | No | Vendure payment method code. Defaults to `esewa`. |
 
+## Fonepay options
+
+| Option | Type | Required | Description |
+| --- | --- | --- | --- |
+| `merchantCode` | `string` | Yes | Merchant code supplied during Fonepay/acquiring-bank onboarding. |
+| `username` | `string` | Yes | Server-side merchant API username. |
+| `password` | `string` | Yes | Server-side merchant API password. Never expose it to the storefront. |
+| `secretKey` | `string` | Yes | HMAC-SHA512 signing key. Never reuse the internal settlement secret. |
+| `environment` | `sandbox` or `production` | No | Defaults to `sandbox`. Production use requires merchant certification. |
+| `paymentMethodCode` | `string` | No | Vendure payment method code. Defaults to `fonepay`. |
+
+Fonepay support is experimental. Confirm the current endpoint contract, PRN limits, sandbox TLS configuration, and merchant certification requirements with Fonepay or the acquiring bank before enabling production.
+
 ## Environment separation
 
 Create separate deployments or secret sets for sandbox and production. Never select production merely because `NODE_ENV=production`; the provider environment must be explicit so staging cannot accidentally charge real accounts.
 
 ## Multi-channel limitation
 
-Version 0.1 uses one credential set per provider for the entire Vendure instance. Payment attempts record `channelId` and `channelToken`, but per-channel credential resolution is not implemented yet. Do not use this release when multiple channels require different merchant accounts for the same provider.
+The current release uses one credential set per provider for the entire Vendure instance. Payment attempts record `channelId` and `channelToken`, but per-channel credential resolution is not implemented yet. Do not use this release when multiple channels require different merchant accounts for the same provider.
 
 ## Secret rotation
 

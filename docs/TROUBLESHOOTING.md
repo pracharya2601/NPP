@@ -7,7 +7,7 @@ Common causes:
 - `NepalPaymentsPlugin` was added without calling `.init()`;
 - the internal signing secret is shorter than 32 characters;
 - a public URL uses HTTP outside localhost;
-- neither Khalti nor eSewa is configured;
+- no payment provider is configured;
 - a required provider credential is empty;
 - Vendure is outside the plugin compatibility range.
 
@@ -57,6 +57,14 @@ The reconciliation task can still perform a trusted server status lookup, but a 
 ## Khalti lookup reference mismatch
 
 The `pidx` returned by lookup must equal the stored provider reference. Confirm that the callback URL and attempt ID were not reused or modified. Treat a mismatch as a security event rather than editing the database.
+
+## Fonepay QR creation or TLS failure
+
+Confirm that merchant code, username, password, signing key, environment, and endpoint contract all belong to the same Fonepay merchant setup. Do not use credentials copied from public examples. If the sandbox certificate or documented path is invalid, contact Fonepay or the acquiring bank; never disable TLS verification.
+
+## Fonepay remains pending
+
+The first integration does not use provider WebSocket messages for settlement. Confirm that the Vendure worker and scheduler are running and that server-side status requests reach Fonepay. A status response must return the exact stored PRN and configured merchant code before settlement.
 
 ## Duplicate payment attempt
 

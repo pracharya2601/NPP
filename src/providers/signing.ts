@@ -4,6 +4,10 @@ export function hmacSha256Base64(message: string, secret: string): string {
   return createHmac('sha256', secret).update(message, 'utf8').digest('base64');
 }
 
+export function hmacSha512Hex(message: string, secret: string): string {
+  return createHmac('sha512', secret).update(message, 'utf8').digest('hex');
+}
+
 export function secureStringEqual(left: string, right: string): boolean {
   const a = Buffer.from(left, 'utf8');
   const b = Buffer.from(right, 'utf8');

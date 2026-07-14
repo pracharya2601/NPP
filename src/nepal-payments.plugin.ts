@@ -4,14 +4,14 @@ import { shopApiExtensions } from './api/api-extensions';
 import { PaymentCallbackController } from './api/payment-callback.controller';
 import { NepalPaymentsPluginOptions, setPluginOptions } from './config';
 import { NepalPaymentAttempt } from './entities/payment-attempt.entity';
-import { esewaPaymentHandler, khaltiPaymentHandler } from './handlers/payment-handlers';
+import { esewaPaymentHandler, fonepayPaymentHandler, khaltiPaymentHandler } from './handlers/payment-handlers';
 import { PaymentHttpClient } from './providers/http-client';
 import { PaymentOrchestratorService } from './services/payment-orchestrator.service';
 import { ReconciliationService } from './services/reconciliation.service';
 import { reconcileNepalPaymentsTask } from './services/reconciliation.task';
 
 /**
- * Adds Khalti by IME and eSewa payment integrations to Vendure.
+ * Adds Khalti by IME, eSewa, and experimental Fonepay payment integrations to Vendure.
  *
  * @example
  * ```ts
@@ -43,6 +43,7 @@ import { reconcileNepalPaymentsTask } from './services/reconciliation.task';
     const options = getInitializedOptions();
     if (options.khalti && !codes.has(khaltiPaymentHandler.code)) handlers.push(khaltiPaymentHandler);
     if (options.esewa && !codes.has(esewaPaymentHandler.code)) handlers.push(esewaPaymentHandler);
+    if (options.fonepay && !codes.has(fonepayPaymentHandler.code)) handlers.push(fonepayPaymentHandler);
     config.paymentOptions.paymentMethodHandlers = handlers;
     if (options.reconciliationSchedule !== false) {
       reconcileNepalPaymentsTask.configure({

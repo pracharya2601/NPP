@@ -13,6 +13,7 @@
 
 - [ ] Successful Khalti payment
 - [ ] Successful eSewa payment
+- [ ] Successful Fonepay Dynamic QR payment (experimental)
 - [ ] Customer cancellation
 - [ ] Expired checkout
 - [ ] Provider pending/ambiguous status
@@ -27,18 +28,21 @@
 - [ ] Full Khalti refund
 - [ ] Partial Khalti refund
 - [ ] Manual eSewa refund process
+- [ ] Fonepay QR status reconciliation without WebSocket delivery
+- [ ] Fonepay duplicate PRN, merchant mismatch, and failed/pending status handling
 
 Verify in every case that fulfillment occurs only after the Vendure payment is `Settled`.
 
 ## Before production
 
 - [ ] Merchant onboarding and KYC are complete for each provider.
-- [ ] Production domains and callback URLs are approved by providers.
+- [ ] Production domains and callback URLs, where applicable, are approved by providers.
 - [ ] Production keys are separate from sandbox keys.
+- [ ] Experimental Fonepay support has passed acquiring-bank/Fonepay certification and current endpoint/TLS review.
 - [ ] `publicServerUrl` and `storefrontResultUrl` use HTTPS.
 - [ ] `internalSigningSecret` is unique, random, and at least 32 characters.
 - [ ] Logs redact authorization headers, secrets, customer identifiers, and raw callbacks.
-- [ ] Callback routes are protected by infrastructure rate limiting and request-size limits.
+- [ ] Callback routes and payment-status polling are protected by infrastructure rate limiting and request-size limits.
 - [ ] Database backups and migration rollback procedures are tested.
 - [ ] Alerts exist for old `pending`, `unknown`, and repeated verification failures.
 - [ ] Operations staff can reconcile provider and Vendure transaction references.

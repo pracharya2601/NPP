@@ -22,14 +22,14 @@ export interface EsewaPluginOptions {
   environment?: 'sandbox' | 'production';
 }
 
-/**
- * Reserved configuration shape for a future official Fonepay integration.
- * Fonepay is not implemented in the current release.
- *
- * @category Configuration
- */
+/** Configuration for the experimental Fonepay Dynamic QR integration. */
 export interface FonepayPluginOptions {
+  merchantCode: string;
+  username: string;
+  password: string;
+  secretKey: string;
   paymentMethodCode?: string;
+  environment?: 'sandbox' | 'production';
 }
 
 /**
@@ -65,8 +65,8 @@ export function setPluginOptions(value: NepalPaymentsPluginOptions): void {
   if (value.internalSigningSecret.length < 32) {
     throw new Error('internalSigningSecret must contain at least 32 characters');
   }
-  if (!value.khalti && !value.esewa) {
-    throw new Error('At least one implemented payment provider must be configured');
+  if (!value.khalti && !value.esewa && !value.fonepay) {
+    throw new Error('At least one payment provider must be configured');
   }
   if (value.khalti && (!value.khalti.secretKey || !value.khalti.websiteUrl)) {
     throw new Error('Khalti secretKey and websiteUrl are required');
@@ -74,6 +74,14 @@ export function setPluginOptions(value: NepalPaymentsPluginOptions): void {
   if (value.khalti) assertPublicUrl(value.khalti.websiteUrl, 'Khalti websiteUrl');
   if (value.esewa && (!value.esewa.secretKey || !value.esewa.productCode)) {
     throw new Error('eSewa secretKey and productCode are required');
+  }
+  if (value.fonepay && (
+    !value.fonepay.merchantCode ||
+    !value.fonepay.username ||
+    !value.fonepay.password ||
+    !value.fonepay.secretKey
+  )) {
+    throw new Error('Fonepay merchantCode, username, password, and secretKey are required');
   }
   options = value;
 }

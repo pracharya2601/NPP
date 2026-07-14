@@ -3,7 +3,7 @@ import { ReconciliationService } from './reconciliation.service';
 
 export const reconcileNepalPaymentsTask = new ScheduledTask({
   id: 'reconcile-nepal-payments',
-  description: 'Verify pending Khalti and eSewa payment attempts',
+  description: 'Verify pending Nepal payment-provider attempts',
   schedule: '*/5 * * * *',
   preventOverlap: true,
   timeout: '4m',

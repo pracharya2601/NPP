@@ -8,7 +8,7 @@ Provider behavior and access can change. Confirm the current official documentat
 | --- | --- | --- | --- | --- |
 | Khalti by IME | KPG-2 server request and hosted redirect | `/epayment/lookup/` using `pidx` | Wallet full/partial; bank-funded refunds may need payer mobile/manual handling | Implemented with refund caveat |
 | eSewa | ePay v2 signed HTML form | Signed callback plus transaction status API | No public refund call implemented | Implemented |
-| Fonepay | Dynamic QR expected | Merchant documentation required | Unknown until onboarding | Reserved, disabled |
+| Fonepay | Signed Dynamic QR request | Authenticated PRN status polling | No standard refund API implemented | Experimental; sandbox certification required |
 | IME Pay | — | — | — | No separate integration; migrated into Khalti by IME |
 | connectIPS / NEPALPAY | Not implemented | Not implemented | Not implemented | Candidate future provider |
 
@@ -38,19 +38,17 @@ Programmatic refunds are intentionally not advertised because the public ePay do
 
 ## Fonepay
 
-Fonepay advertises dynamic QR integration, but the implementation contract is merchant-specific and is not publicly complete. The project will not reproduce private documentation or implement unofficial signature recipes.
+The experimental adapter creates a Dynamic QR using a unique compact PRN and HMAC-SHA512 hexadecimal request signature. It returns the provider's EMV QR payload to the storefront and then relies on scheduled server-to-server status polling. A Fonepay WebSocket URL may be returned during initiation, but WebSocket messages are intentionally not used as settlement proof.
 
-A contribution may enable Fonepay after maintainers can verify legally shareable details for:
+Only a status response whose PRN and merchant code exactly match the payment attempt can settle. The documented status response does not echo the transaction amount, so the adapter relies on the immutable amount bound to the signed QR-initiation PRN. Merchants must confirm this behavior in their current merchant agreement.
 
-- sandbox and production endpoints;
-- merchant authentication and signature canonicalization;
-- dynamic QR request/response fields;
-- enquiry and terminal status mapping;
-- callback authentication;
-- expiry behavior;
-- full and partial refunds.
+The historical implementation material used for interoperability research is not redistributed by this project. Its development endpoint had an invalid TLS certificate during implementation, and endpoint paths were internally inconsistent. Obtain current merchant credentials and endpoint confirmation from Fonepay or the acquiring bank; never bypass certificate validation.
 
-Until then, `FONEPAY` exists in the GraphQL enum for forward compatibility but initiation fails explicitly.
+The documented `thirdPartyPostTaxRefund` flow reports tax-refund information to IRD and is not treated as a general payment refund. Fonepay refunds must follow the merchant's current operational process.
+
+Public Fonepay information: [business onboarding and Dynamic QR](https://fonepay.com/business) and [merchant FAQ](https://fonepay.com/faqs).
+
+See [FONEPAY.md](./FONEPAY.md) for configuration, protocol behavior, observed endpoint status, automated coverage, and the live certification checklist.
 
 ## Provider terms and fees
 

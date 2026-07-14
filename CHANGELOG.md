@@ -9,9 +9,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 ### Planned
 
 - End-to-end tests against provider sandboxes and a real Vendure test server
-- Fonepay dynamic QR support after official merchant API documentation is available
+- Fonepay acquiring-bank sandbox certification and current endpoint/TLS confirmation
 - Channel-specific provider credentials
 - Admin Dashboard payment-attempt and reconciliation views
+
+## [0.2.0] - 2026-07-14
+
+### Added
+
+- Experimental Fonepay Dynamic QR initiation and authenticated PRN status verification
+- Fonepay HMAC-SHA512 hexadecimal signing, compact PRN generation, response validation, and contract tests
+- Fonepay Vendure payment handler, configuration, storefront QR guidance, and reconciliation documentation
+- Dedicated Fonepay protocol, security, test-status, and sandbox-certification guide
+- Security and support guidance for QR payloads and provider WebSocket capability URLs
 
 ## [0.1.0] - 2026-07-13
 
@@ -28,5 +38,6 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Storefront GraphQL API and integration documentation
 - Unit tests for configuration, signing, amount conversion, Khalti, and eSewa
 
-[Unreleased]: https://github.com/pracharya2601/NPP/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/pracharya2601/NPP/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/pracharya2601/NPP/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/pracharya2601/NPP/releases/tag/v0.1.0

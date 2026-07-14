@@ -79,3 +79,4 @@ function createHandler(providerCode: NepalPaymentProviderCode, displayName: stri
 
 export const khaltiPaymentHandler = createHandler('khalti', 'Khalti by IME', true);
 export const esewaPaymentHandler = createHandler('esewa', 'eSewa', false);
+export const fonepayPaymentHandler = createHandler('fonepay', 'Fonepay', false);

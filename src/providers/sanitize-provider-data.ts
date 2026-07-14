@@ -1,4 +1,4 @@
-const SENSITIVE_KEY = /(?:authorization|secret|api.?key|password|passcode|pin|otp|token|mobile|phone|email|customer|signature|signed.?data|payment.?url|redirect.?url)/i;
+const SENSITIVE_KEY = /(?:authorization|secret|api.?key|password|passcode|pin|otp|token|mobile|phone|email|customer|signature|signed.?data|data.?validation|payment.?url|redirect.?url|qr.?message|websocket.?url)/i;
 const MAX_DEPTH = 5;
 const MAX_ARRAY_ITEMS = 50;
 const MAX_STRING_LENGTH = 500;

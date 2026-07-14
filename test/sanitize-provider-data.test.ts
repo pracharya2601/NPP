@@ -8,13 +8,17 @@ describe('provider response sanitization', () => {
       transaction_id: 'txn-1',
       payment_url: 'https://provider.example/secret-link',
       customer_info: { email: 'customer@example.com', mobile: '9800000000' },
-      nested: { signature: 'signed-value', total_amount: 1000 },
+      nested: { signature: 'signed-value', dataValidation: 'hmac', total_amount: 1000 },
+      qrMessage: '000201secret-qr-payload',
+      thirdpartyQrWebSocketUrl: 'wss://provider.example/secret-capability',
     })).toEqual({
       status: 'Completed',
       transaction_id: 'txn-1',
       payment_url: '[REDACTED]',
       customer_info: '[REDACTED]',
-      nested: { signature: '[REDACTED]', total_amount: 1000 },
+      nested: { signature: '[REDACTED]', dataValidation: '[REDACTED]', total_amount: 1000 },
+      qrMessage: '[REDACTED]',
+      thirdpartyQrWebSocketUrl: '[REDACTED]',
     });
   });
 

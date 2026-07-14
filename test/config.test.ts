@@ -25,4 +25,27 @@ describe('plugin configuration', () => {
       storefrontResultUrl: 'http://127.0.0.1:3001/payment-result',
     })).not.toThrow();
   });
+
+  it('accepts Fonepay as the only configured provider', () => {
+    expect(() => setPluginOptions({
+      publicServerUrl: valid.publicServerUrl,
+      storefrontResultUrl: valid.storefrontResultUrl,
+      internalSigningSecret: valid.internalSigningSecret,
+      fonepay: {
+        merchantCode: 'merchant',
+        username: 'username',
+        password: 'password',
+        secretKey: 'secret',
+      },
+    })).not.toThrow();
+  });
+
+  it('rejects incomplete Fonepay credentials', () => {
+    expect(() => setPluginOptions({
+      publicServerUrl: valid.publicServerUrl,
+      storefrontResultUrl: valid.storefrontResultUrl,
+      internalSigningSecret: valid.internalSigningSecret,
+      fonepay: { merchantCode: 'merchant' } as never,
+    })).toThrow('Fonepay');
+  });
 });

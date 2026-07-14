@@ -9,7 +9,7 @@ This guide installs the plugin into an existing Vendure 3.7 application. The plu
 - A Vendure SQL database
 - A separately running Vendure worker for scheduled reconciliation in production
 - Merchant sandbox credentials from at least one supported provider
-- A publicly reachable HTTPS server URL for provider callbacks
+- A publicly reachable HTTPS server URL for providers that use callbacks
 
 ## 1. Install the package
 
@@ -28,7 +28,7 @@ npm run build
 npm pack
 
 # In the Vendure application; use the generated filename
-npm install ../vendure-plugin-nepal-payments/pa-vendure-plugin-nepal-payments-0.1.0.tgz
+npm install ../vendure-plugin-nepal-payments/prakashacharya-vendure-plugin-nepal-payments-0.2.0.tgz
 ```
 
 ## 2. Add environment variables
@@ -71,6 +71,14 @@ export const config: VendureConfig = {
         secretKey: process.env.ESEWA_SECRET_KEY!,
         paymentMethodCode: 'esewa',
       },
+      fonepay: {
+        environment: process.env.FONEPAY_ENVIRONMENT === 'production' ? 'production' : 'sandbox',
+        merchantCode: process.env.FONEPAY_MERCHANT_CODE!,
+        username: process.env.FONEPAY_USERNAME!,
+        password: process.env.FONEPAY_PASSWORD!,
+        secretKey: process.env.FONEPAY_SECRET_KEY!,
+        paymentMethodCode: 'fonepay',
+      },
     }),
   ],
 };
@@ -103,6 +111,9 @@ Start the server and open the Vendure Dashboard:
 5. Create a method with code `esewa`.
 6. Select the **eSewa** handler (`nepal-esewa`).
 7. Enable it and assign it only to channels that use NPR.
+8. Create a method with code `fonepay`.
+9. Select the **Fonepay** handler (`nepal-fonepay`).
+10. Enable it only after reviewing the experimental-provider limitations and assign it only to NPR channels.
 
 The payment method code must equal the matching `paymentMethodCode` in plugin configuration. The handler code and payment method code are different concepts.
 
@@ -110,12 +121,13 @@ The payment method code must equal the matching `paymentMethodCode` in plugin co
 | --- | --- | --- |
 | Khalti by IME | `khalti` | `nepal-khalti` |
 | eSewa | `esewa` | `nepal-esewa` |
+| Fonepay | `fonepay` | `nepal-fonepay` |
 
 ## 6. Integrate the storefront
 
-Follow [STOREFRONT.md](./STOREFRONT.md). The storefront must transition the order to `ArrangingPayment`, call `initiateNepalPayment`, then redirect to Khalti or submit the signed eSewa form.
+Follow [STOREFRONT.md](./STOREFRONT.md). The storefront must transition the order to `ArrangingPayment`, call `initiateNepalPayment`, then redirect to Khalti, submit the signed eSewa form, or render the Fonepay QR payload locally.
 
-Do not call Vendure's standard `addPaymentToOrder` mutation directly from the storefront for these providers. The callback orchestrator does that only after server verification.
+Do not call Vendure's standard `addPaymentToOrder` mutation directly from the storefront for these providers. The verification orchestrator does that only after an authoritative server lookup.
 
 ## 7. Verify the installation
 

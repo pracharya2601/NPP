@@ -20,6 +20,8 @@ The repository does not include provider SDK source code, logos, private manuals
 
 Contributors must not upload documents or assets they are not authorized to redistribute.
 
+The Fonepay adapter is an independent interoperability implementation. It does not copy the third-party .NET implementation or bundle the historical merchant-integration PDF used during protocol research. Protocol endpoints, field names, and signature formats remain subject to Fonepay's merchant terms and current onboarding material.
+
 ## Trademarks
 
 Vendure, Khalti, IME Pay, eSewa, Fonepay, and other product names are trademarks of their respective owners. Their use does not imply endorsement. See [`NOTICE.md`](../NOTICE.md).

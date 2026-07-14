@@ -8,11 +8,11 @@ The plugin adds one Shop API mutation. It does not add UI components, so any Ven
 2. Transition the active order to `ArrangingPayment`.
 3. Query eligible payment methods and show only methods returned by Vendure.
 4. Call `initiateNepalPayment` with the selected provider.
-5. Redirect to Khalti or submit the returned eSewa form.
-6. The provider returns to the plugin callback controller.
+5. Redirect to Khalti, submit the returned eSewa form, or render the Fonepay QR payload.
+6. Redirect providers return through the plugin callback controller; Fonepay remains on the QR checkout while the worker reconciles.
 7. The plugin verifies server-to-server and creates a settled Vendure payment.
-8. The plugin redirects to the configured storefront result page.
-9. The result page queries Vendure for the authoritative order state.
+8. Redirect callbacks go to the configured storefront result page; QR checkout polls the Vendure order/payment state.
+9. The storefront treats only Vendure's authoritative order/payment state as final.
 
 ## GraphQL mutation
 
@@ -46,6 +46,12 @@ or:
 
 ```json
 { "provider": "ESEWA" }
+```
+
+or:
+
+```json
+{ "provider": "FONEPAY" }
 ```
 
 The request must carry the same Vendure session token/cookie used for the active order.
@@ -89,6 +95,18 @@ function submitPaymentForm(form: {
 ```
 
 Do not recalculate, reformat, translate, or round any signed eSewa field.
+
+## Fonepay response
+
+Fonepay returns `qrPayload`. Render it locally with a maintained QR component:
+
+```ts
+const payment = result.data.initiateNepalPayment;
+if (!payment.qrPayload) throw new Error('Fonepay QR payload was not returned');
+renderQrIntoCheckout(payment.qrPayload);
+```
+
+Do not send `qrPayload` to a public QR-image generation service. Keep the checkout open, poll the authoritative Vendure order/payment state with backoff, and show a pending state while the worker reconciles the Fonepay PRN. The storefront must not connect to the provider WebSocket URL or interpret a scan notification as payment.
 
 ## Result page
 

@@ -4,6 +4,7 @@
 - [Configuration reference](./CONFIGURATION.md)
 - [Storefront integration](./STOREFRONT.md)
 - [Provider support and onboarding](./PROVIDERS.md)
+- [Fonepay Dynamic QR integration](./FONEPAY.md)
 - [Architecture and payment lifecycle](./ARCHITECTURE.md)
 - [Adding another provider](./ADDING_A_PROVIDER.md)
 - [Security and production checklist](./PRODUCTION.md)

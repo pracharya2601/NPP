@@ -11,12 +11,12 @@ PaymentOrchestratorService ── persists ── NepalPaymentAttempt
   │ initiate                             │ idempotency/status
   ▼                                      │
 Provider adapter                         │
-  │ redirect or signed form              │
+  │ redirect, signed form, or QR payload  │
   ▼                                      │
-Hosted provider checkout                 │
-  │ callback                             │
+Provider checkout or customer QR scan    │
+  │ callback or scheduled reconciliation │
   ▼                                      │
-PaymentCallbackController ───────────────┘
+Verification orchestrator ───────────────┘
   │ server lookup + exact validation
   ▼
 Authenticated settlement proof
@@ -30,7 +30,7 @@ Settled Vendure Payment → order state transition
 
 ## Why separate payment handlers
 
-Vendure payment methods are independently enabled, assigned to channels, checked for eligibility, displayed to customers, refunded, and reported. Keeping `nepal-khalti` and `nepal-esewa` separate preserves those native behaviors while sharing internal infrastructure.
+Vendure payment methods are independently enabled, assigned to channels, checked for eligibility, displayed to customers, refunded, and reported. Keeping `nepal-khalti`, `nepal-esewa`, and `nepal-fonepay` separate preserves those native behaviors while sharing internal infrastructure.
 
 ## Why payment attempts are separate from Vendure payments
 
@@ -50,8 +50,8 @@ The handler checks this proof using `internalSigningSecret` and then independent
 
 - Merchant references are UUIDs.
 - Provider/merchant and provider/provider-reference pairs are unique.
-- Callback processing atomically changes an eligible attempt to `verifying`.
-- Already-settled callbacks return the existing attempt.
+- Callback or reconciliation processing atomically changes an eligible attempt to `verifying`.
+- Already-settled verification requests return the existing attempt.
 - Stale `verifying` attempts return to `pending` during reconciliation.
 - Vendure creates a payment only after a successful provider lookup.
 
@@ -68,8 +68,8 @@ Only `settled` creates a Vendure payment. Unknown and ambiguous provider states 
 
 ## Amounts
 
-Vendure stores money as integer minor units. Khalti consumes paisa directly. eSewa consumes a canonical rupee decimal string. Conversion uses string/integer arithmetic and rejects unsafe or over-precise values.
+Vendure stores money as integer minor units. Khalti consumes paisa directly. eSewa and Fonepay consume canonical rupee decimal strings. Conversion uses string/integer arithmetic and rejects unsafe or over-precise values. Fonepay status responses do not echo the amount, so the unique PRN remains bound to the immutable amount from its signed initiation request.
 
 ## Reconciliation
 
-The scheduled task checks old `initiated`, `pending`, and `unknown` attempts. It does not infer success; it calls the same provider verification and settlement path as a callback. This handles lost redirects, browser closure, and transient network errors.
+The scheduled task checks old `initiated`, `pending`, and `unknown` attempts. It does not infer success; it calls the same provider verification and settlement path as a callback. This handles lost redirects, browser closure, transient network errors, and QR providers such as Fonepay that do not return the browser through the shared callback route.

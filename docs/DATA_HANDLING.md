@@ -19,7 +19,7 @@ The plugin does not intentionally store wallet passwords, OTPs, PINs, card data,
 
 ## Provider-response redaction
 
-Before a provider response is stored, recursive redaction removes fields whose names indicate credentials, API keys, PINs, OTPs, customer details, phone/mobile numbers, email addresses, signatures, tokens, or signed payment/redirect URLs. Depth, array size, and string length are bounded.
+Before a provider response is stored, recursive redaction removes fields whose names indicate credentials, API keys, PINs, OTPs, customer details, phone/mobile numbers, email addresses, signatures, tokens, signed payment/redirect URLs, Fonepay QR payloads, or provider WebSocket capability URLs. Depth, array size, and string length are bounded.
 
 This is defense in depth, not a substitute for reviewing every provider adapter. New adapters must return the smallest useful `raw` object and must add tests for provider-specific sensitive fields.
 
