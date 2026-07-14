@@ -16,7 +16,7 @@ This guide installs the plugin into an existing Vendure 3.7 application. The plu
 From the Vendure server project:
 
 ```bash
-npm install @pa/vendure-plugin-nepal-payments
+npm install @prakashacharya/vendure-plugin-nepal-payments
 ```
 
 When developing from a local clone before the first npm release:
@@ -49,7 +49,7 @@ Add `NepalPaymentsPlugin.init()` to `vendure-config.ts`:
 
 ```ts
 import { DefaultSchedulerPlugin, VendureConfig } from '@vendure/core';
-import { NepalPaymentsPlugin } from '@pa/vendure-plugin-nepal-payments';
+import { NepalPaymentsPlugin } from '@prakashacharya/vendure-plugin-nepal-payments';
 
 export const config: VendureConfig = {
   // Existing database, API, auth, order and other configuration...

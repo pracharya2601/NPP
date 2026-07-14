@@ -34,5 +34,17 @@ jobs:
       - name: Verify release
         run: npm run check
 
+      - name: Verify npm publishing credentials
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "The NPM_TOKEN secret is not configured for the npm environment."
+            echo "Add it under Settings > Environments > npm > Environment secrets."
+            exit 1
+          fi
+
       - name: Publish with provenance
         run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

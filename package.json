@@ -1,5 +1,5 @@
 {
-  "name": "@pa/vendure-plugin-nepal-payments",
+  "name": "@prakashacharya/vendure-plugin-nepal-payments",
   "version": "0.1.0",
   "description": "Open-source Vendure payment integrations for Khalti by IME, eSewa, and other Nepalese providers",
   "license": "MIT",
